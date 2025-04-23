@@ -7,56 +7,52 @@ class Patient(models.Model):
 
     # Choices for Gender 
     GenderChoices = [
-        (1,'Male'),
-        (2, 'Female')
+        (0,'Male'),
+        (1, 'Female')
     ]
-    # Choices for racial categories 
-    RacialCat= [
-        (1,'American Indian or Alaskan Native'),
-        (2, 'Asian'),
-        (3, 'Native Haiwaian or other Pacific Islander'),
-        (4,'Black or African American'),
-        (5,'White'),
-        (6, 'More than once race'),
-        (7, 'Uknown'),
-        (8, 'Native American'),
-        (9, 'Other Pacific Islander')
-    ]
-    # Choices for Family History
-    FHChoices = [
-        (0, 'No'),
-        (1, 'Yes'),
-        (2, 'Unknown')
-    ]
-    DS_Choices = [
-        (1,'CN'),
-        (2,'MCI'),
-        (3,'DEMENTIA')
-    ]
-    DXD_Choices = [
-        (0,'Unknown'),
-        (1, 'AD'),
-        (2, 'NOT AD')
-    ]
-    GENO_Choices = [
-        (0, '2/2'),
-        (1, '2/3'),
-        (2, '2/4'),
-        (3, '3/3'),
-        (4, '3/4'),
-        (5, '4/4')
+    
+    # Choices for Dominant Hand 
+    Dominant_H_Choices = [
+        (0,'Right'),
+        (1, 'Left')
     ]
 
+    # Choices for Social Economic Status 
+    CDR_Choices = [
+        (0,'Non Demented'),
+        (0.5, 'Very Mild AD'),
+        (1, 'Mild AD'),
+        (2, 'Moderate AD'),
+    ]
 
-    PTID = models.CharField(max_length=50, null=True, blank=False)
-    PTGENDER = models.IntegerField(choices=GenderChoices, null=True, blank=False)
-    PTRACCAT = models.IntegerField(choices=RacialCat,null=True, blank=False)
-    FHQSIBAD = models.IntegerField(choices=FHChoices,null=True, blank=False)
-    DIAGNOSIS = models.IntegerField(choices=DS_Choices,null=True, blank=False)
-    DXDDUE = models.IntegerField(choices= DXD_Choices,null=True, blank=False)
-    GENOTYPE = models.IntegerField(choices=GENO_Choices,null=True, blank=False)
+    # Chices got Group
+    Group_Choices = [
+        (0,'Non Demented'),
+        (1, 'Demented'),
+        (2, 'Converted')
+    ] 
+  
+
+    SUBJECT_ID = models.CharField(max_length=50, null=True, blank=False)
+    MRI_ID = models.CharField(max_length=50, null=True, blank=False)
+    GENDER = models.IntegerField(choices=GenderChoices, null=True, blank=False)
+    HAND = models.IntegerField(choices=Dominant_H_Choices, null=True, blank=False)
+    GROUP = models.IntegerField(choices=Group_Choices , null=True, blank=False)
+    EDUCATION = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)],null=True, blank=False)
+    SES = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)],null=True, blank=False)
+    CDR = models.IntegerField(choices=CDR_Choices, null=True, blank=False)
     MMSCORE = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)],null=True, blank=False)
     AGE = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)],null=True, blank=False)
+    ETIV = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)],null=True, blank=False)
+    NWBV = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)],null=True, blank=False)
+    ASF = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)],null=True, blank=False)
+    
+    def __str__(self):
+        return self.SUBJECT_ID
+    
+class Prediction(models.Model):
+    SUBJECT_ID = models.CharField(max_length=50, null=True, blank=False)
+    Prediction_Result = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.PTID
+        return self.SUBJECT_ID
