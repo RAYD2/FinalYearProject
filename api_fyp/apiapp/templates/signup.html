@@ -1,0 +1,7 @@
+<a class="btn btn-primary" href="{% url 'home' %}">Back</a>
+<form method = "post" novalidate>
+    {% csrf_token%}
+    <h2>Signup</h2>
+    {{form.as_p}}
+    <button type="submit" class="btn btn-primary">Sign up</button>
+</form>
