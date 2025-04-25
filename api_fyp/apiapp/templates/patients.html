@@ -1,16 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>PATIENTS</h1>
 <br/>
+  <div class="modal fade" id="Modal_create_patient" tabindex="-1" aria-labelledby="Modal_create_patientLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="Modal_create_patientLabel">CREATE NEW PATIENT</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form method = "post" action="{% url 'patients' pk=user_info.pk %}"  novalidate>
+                {% csrf_token%}
+                {{form.as_p}}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <a href="{%url  'patients' pk=user_info.pk %}" data-bs-toggle="modal"  data-bs-target="#Modal_create_patient" class="btn btn-primary" style="width: 7rem ; font-size: 0.6rem; position: relative; top:4.7rem;">CREATE PATIENT</a>
 {% if patients %}
-        <div  class = container_cards style = "border: 0.05rem solid black; border-radius: 0.5rem;">
+        <div style =  "display: flex;">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </div>
+        <br></br>
+        <div  class = container_cards style = " display:flex; align-items: center; flex-direction:column;  width: 100%; justify-content : center ; border: 0.05rem solid rgba(0, 0, 0, 0); border-radius: 0.5rem; background-color: white; overflow: hidden; ">
             {% for patient in patients%}
-            <div class="card" style="width: 31rem; height: 4.5rem; margin:0.5rem;">
+            <div class="card" style="  position:relative; width: 98%; height: 4.5rem; margin:0.5rem; border-color: white;">
                 <div class="card-body">
-                <h5 class="card-title" style="font-size: 1.2rem;">{{patient.PT_F_NAME}} {{patient.PT_LAST_NAME}} </h5>
+             <h5 class="card-title" style="font-size: 1.2rem;">{{patient.PT_F_NAME}} {{patient.PT_LAST_NAME}} </h5>
                 <p class="card-text" style="font-size: 0.6rem;">ID: {{patient.SUBJECT_ID}}</p>
-                <a href="#" class="btn btn-primary" style="width: 3rem ; font-size: 0.6rem; position: relative; left: 25rem; bottom:4rem;">ADD</a>
+                <a href="{%url 'patient_add_list' patient.id %}"  class="btn btn-primary" style="width: 3rem ; font-size: 0.6rem; position: relative; left: 93%; bottom:4rem;">ADD</a>
                 </div>
             </div>
         {% endfor %} 

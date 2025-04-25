@@ -18,6 +18,12 @@ class User(AbstractUser):
             'username': self.username,
             'email': self.email,
         }
+# making a profile for each user 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete= models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
 #  model for the patient data
 class Patient(models.Model):
 
@@ -63,16 +69,11 @@ class Patient(models.Model):
     ETIV = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)],null=True, blank=False)
     NWBV = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)],null=True, blank=False)
     ASF = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)],null=True, blank=False)
-    Doctor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank = True)
-    def __str__(self):
-        return self.SUBJECT_ID
-# making a profile for each user 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete= models.CASCADE)
-    treating = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name= 'assigned_to',null=True, blank=True)
+    assigned_to = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name= 'assigned_to',null=True, blank=True)
 
     def __str__(self):
-        return self.user.username
+        return self.SUBJECT_ID
+
 
 # making a profile for each patient
 

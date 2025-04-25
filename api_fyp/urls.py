@@ -21,12 +21,13 @@ from .apiapp import views
 urlpatterns = [
 
     path("admin/", admin.site.urls),
-     path("Home/", views.home, name = "home"),
+    path("Home/", views.home, name = "home"),
     path("login/", views.user_login, name = "login"),
     path("signup/", views.user_signup, name = "signup"),
     path("logout/", views.user_logout, name = "logout"),
-    path("dashboard/<int:pk>/", views.userprofile, name = "userprofile"),
-    path("patients/", views.patients, name = "patients"),
-    # path("users/", include('django.contrib.auth.urls')),
-    # path("users/", include('users.urls'))
+    path("dashboard/<int:pk>/", views.dash_view, name = "dash_view"),
+    path("patients/<int:pk>/", views.patients, name = "patients"),
+    path("patients/add/<int:pk>/", views.patient_add_list, name = "patient_add_list"),
+    path("patient_dashboard/", views.patient_dashboard, name = "patient_dashboard"),
+
 ]

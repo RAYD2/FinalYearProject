@@ -1,5 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Hello World</h1>
-{% endblock%}
+{% if current_patients %}
+        <br></br>
+        <div  class = container_cards style = " padding: 1rem; display:flex; align-items: center; flex-direction:column;  width: 40%; max-width: 40%; justify-content : center ; border: 0.05rem solid rgba(0, 0, 0, 0); border-radius: 1rem; overflow: hidden; background-color: white;">
+            <div>
+                <h3 style="padding-top: 2%; padding-bottom: 4%; color: #0077ff; ">Current Patients</h3>
+            </div>
+            {% for patient in current_patients  %}
+                <div class="card" style="position:relative; width: 80%; height: 4rem; margin:0.5rem auto;">
+                    <a href="{% url 'patient_dashboard'%}" class="text-decoration-none" style="cursor: pointer; color: black;">
+                        <div class="card-body" style="position: relative; bottom: 0.5rem;">
+                            <h5 class="card-title" style="font-size: 1.2rem;">{{patient.PT_F_NAME}} {{patient.PT_LAST_NAME}} </h5>
+                            <p class="card-text" style="font-size: 0.6rem;">ID: {{patient.SUBJECT_ID}}</p>
+                        </div>
+                    </a>
+                </div>
+        {% endfor %} 
+        </div>
+{% else %}
+        <p>No Current Patients</p>
+{% endif %}
+{% endblock %}
