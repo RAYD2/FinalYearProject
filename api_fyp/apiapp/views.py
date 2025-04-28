@@ -7,8 +7,8 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import create_user
 from .forms import create_new_patient
-
-
+from .models import Visit
+from .forms import create_visit
 
 def home(request):
     return render(request, 'Home.html', {})
@@ -68,23 +68,23 @@ def patients(request, pk):
     # only patients that are not already assigned show up
     return render(request, 'patients.html', {'form': form,'patients': patients, 'user_info': user_info})
 
-def patient_information(request, pk):
-    patient_info = get_object_or_404(Patient, id=pk)
-    return render(request, "patient_dashboard.html", {"patient_info" : patient_info})
-
 def dash_view(request, pk):
     if request.user.is_authenticated:
         try:
             user_info = get_object_or_404(UserProfile, id=pk)
             profile = UserProfile.objects.get(user=request.user)
             current_patients = Patient.objects.filter(assigned_to = profile)
-            return render(request, "dashboard.html", {"current_patients" : current_patients, "user_info" : user_info})
+            flagged_patients = Patient.objects.filter(flagged_by=profile)
+            print(flagged_patients, profile)
+            return render(request, "dashboard.html", {"current_patients" : current_patients, "user_info" : user_info, "flagged_patients" : flagged_patients})
         except:
                 current_patients = Patient.objects.none()
+                flagged_patients = Patient.objects.none()
     else:
        current_patients= Patient.objects.none()
+       flagged_patients = Patient.objects.none()
     
-    return render(request, "dashboard.html", {"current_patients" : current_patients, "user_info" : user_info})
+    return render(request, "dashboard.html", {"current_patients" : current_patients, "user_info" : user_info , "flagged_patients" : flagged_patients})
 
 def patient_add_list(request, pk):
     add_patient = Patient.objects.get(pk=pk)
@@ -93,5 +93,48 @@ def patient_add_list(request, pk):
     add_patient.save()
     return redirect('patients', pk=profile.pk)
 
-def patient_dashboard(request):
-    return render(request, 'patient_dashboard.html', {})
+def patient_dashboard(request, pk , p_pk):
+    patient_info = get_object_or_404(Patient, id=p_pk)
+    user_info = get_object_or_404(UserProfile, id=pk)
+    return render(request, "patient_dashboard.html", {"patient_info" : patient_info, "user_info" : user_info})
+
+
+def patient_remove_list(request, pk):
+    patient = Patient.objects.get(pk=pk)
+    profile = UserProfile.objects.get(user=request.user)
+    patient.assigned_to = None
+    patient.save()
+    if  patient.flagged_by == profile:
+        patient.flagged_by = None
+        patient.save()
+    
+    return redirect('dash_view',  pk=profile.pk)
+
+
+def patient_flag(request, pk):
+    flag_patient = Patient.objects.get(pk=pk)
+    profile = UserProfile.objects.get(user=request.user)
+    if flag_patient.flagged_by == None:
+            flag_patient.flagged_by = profile
+            flag_patient.save()
+    else:
+            flag_patient.flagged_by = None
+            flag_patient.save()
+    return redirect('patient_dashboard', pk=profile.id, p_pk =pk )
+
+
+def add_visits(request, pk,p_pk):
+    # form to add patients 
+    patient_info = get_object_or_404(Patient, id=p_pk)
+    user_info = get_object_or_404(UserProfile, id=pk)
+    
+    form = create_visit()
+    if request.method =='GET':
+        form = create_visit()
+    if request.method == 'POST':
+        form = create_visit(request.POST)
+        if form.is_valid():
+            visit_form = form.save(commit=False)
+            visit_form.save()
+            return redirect('add_visits', pk=user_info.pk, p_pk=patient_info.pk)
+    return  render(request, "patient_dashboard.html", {"patient_info" : patient_info, "user_info" : user_info, "form":form})

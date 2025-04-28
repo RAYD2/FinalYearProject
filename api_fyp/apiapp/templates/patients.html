@@ -14,7 +14,6 @@
                 {% csrf_token%}
                 {{form.as_p}}
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
@@ -33,8 +32,8 @@
             {% for patient in patients%}
             <div class="card" style="  position:relative; width: 98%; height: 4.5rem; margin:0.5rem; border-color: white;">
                 <div class="card-body">
-             <h5 class="card-title" style="font-size: 1.2rem;">{{patient.PT_F_NAME}} {{patient.PT_LAST_NAME}} </h5>
-                <p class="card-text" style="font-size: 0.6rem;">ID: {{patient.SUBJECT_ID}}</p>
+             <h5 class="card-title" style="font-size: 1.2rem; color: rgb(82, 82, 82);">{{patient.PT_F_NAME}} {{patient.PT_LAST_NAME}} </h5>
+                <p class="card-text" style="font-size: 0.6rem; color: rgb(82, 82, 82);">ID: {{patient.SUBJECT_ID}}</p>
                 <a href="{%url 'patient_add_list' patient.id %}"  class="btn btn-primary" style="width: 3rem ; font-size: 0.6rem; position: relative; left: 93%; bottom:4rem;">ADD</a>
                 </div>
             </div>
