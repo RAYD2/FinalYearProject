@@ -14,7 +14,7 @@ class GetPatientAdmin(admin.ModelAdmin):
 
 @admin.register(Prediction)
 class GetPredictiontAdmin(admin.ModelAdmin):
-    list_display = ['SUBJECT_ID','Prediction_Result']
+    list_display = ['patient','Prediction_Result', 'DATE_PREDICTED']
 
 # combining the user and their userprofile 
 class UserProfileInline(admin.StackedInline):
@@ -32,5 +32,5 @@ class GetUserProfile(admin.ModelAdmin):
    
 @admin.register(Visit)
 class GetUserProfile(admin.ModelAdmin):
-    list_display = ['GROUP', 'EDUCATION', 'SES', 'CDR', 'MMSCORE', 'AGE', 'ETIV', 'NWBV', 'ASF']
+    list_display = ['VISIT','GROUP', 'EDUCATION', 'SES', 'CDR', 'MMSCORE', 'AGE', 'ETIV', 'NWBV', 'ASF']
    

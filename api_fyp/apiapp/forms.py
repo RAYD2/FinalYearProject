@@ -22,7 +22,8 @@ class create_new_patient(forms.ModelForm):
         # 'GROUP', 'EDUCATION', 'SES', 'CDR', 'MMSCORE', 'AGE', 'ETIV', 'NWBV', 'ASF','MRI_ID',
 
 class create_visit(forms.ModelForm):
+    # DATE_VISIT = forms.DateField( label ="VISIT DATE", widget=forms.DateInput(attrs={'placeholder':"Month/Day/Year", "type":"date", 'class':"form-control"}))
     class Meta:
         model = Visit
-        fields = ('GROUP', 'EDUCATION', 'SES', 'CDR', 'MMSCORE', 'AGE', 'ETIV', 'NWBV', 'ASF')
+        fields = ('VISIT','GROUP', 'EDUCATION', 'SES', 'CDR', 'MMSCORE', 'AGE', 'ETIV', 'NWBV', 'ASF')
 

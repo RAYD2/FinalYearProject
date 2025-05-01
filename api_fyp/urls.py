@@ -29,8 +29,7 @@ urlpatterns = [
     path("patients/<int:pk>/", views.patients, name = "patients"),
     path("patients/add/<int:pk>/", views.patient_add_list, name = "patient_add_list"),
     path("patients/remove/<int:pk>/", views.patient_remove_list, name = "patient_remove_list"),
-    path("patient_dashboard/<int:pk>/<int:p_pk>/", views.patient_dashboard, name = "patient_dashboard"),
     path("patients/flag/<int:pk>/", views.patient_flag, name = "patient_flag"),
-    path("patient_dashboard/add_visits/<int:pk>/<int:p_pk>/", views.add_visits, name="add_visits"),
-
+    path("patient_dashboard/<int:pk>/<int:p_pk>/", views.patient_dashboard, name = "patient_dashboard"),
+    path("patient_dashboard/prediction_view/<int:pk>/<int:p_pk>/", views.prediction_view, name="prediction_view"),
 ]
