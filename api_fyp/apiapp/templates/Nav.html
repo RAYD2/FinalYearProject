@@ -1,27 +1,27 @@
-<nav class="navbar bg-body-tertiary ">
+<nav class="navbar"  style = "background-color: #0077ff;" >
     <div class="container-fluid">
-      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"  aria-label="Toggle navigation">
+      <button style="filter:invert(1);"class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"  aria-label="Toggle navigation" >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="#">Welcome {{ user_info.user.first_name }} </a>
+      <a  style="color: white;" class="navbar-brand" href="#">Welcome {{ user_info.user.first_name }} </a>
       <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavbarLabel"> A-MEDIC </h5>
-          <button type="button"  class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <div class="offcanvas-header" style = "background-color: #0077ff;">
+          <h5  style="color: white;" class="offcanvas-title" id="offcanvasNavbarLabel"> A-MEDIC </h5>
+          <button style="filter:invert(1);" type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div class="offcanvas-body">
+        <div class="offcanvas-body" style = "background-color: #0077ff;" >
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
             <li class="nav-item">
-                <a class="nav-link" href="{}">Profile</a>
+                <a  style="color: white;" class="nav-link" href="{}">Profile</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{% url 'userprofile' pk=user.pk %}"> Dashboard</a>
+              <a  style=" color: white;"class="nav-link" aria-current="page" href="{% url 'dash_view' pk=user.pk %}"> Dashboard</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'patients' %}">Patients</a>
+              <a  style="color: white;"class="nav-link" href="{% url 'patients' pk=user_info.pk %}">Patients</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link"  href="{% url 'logout' %}">Logout</a>
+                <a  style="color: white;" class="nav-link"  href="{% url 'logout' %}">Logout</a>
             </li>
           </ul>
         </div>

@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="modal fade" id="Modal_add_visit" tabindex="-1" aria-labelledby="Modal_add_visitLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="Modal_add_visitLabel">ADD VISIT RESULTS</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div id = "modal_container" class="modal-body">
+            <form method = "post" id = "form_visit" action="{% url 'patient_dashboard' pk=user_info.pk  p_pk=patient_info.id %}"  novalidate>
+                {% csrf_token%}
+                {{form.as_p}}
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="title">
+    <h2> HEALTH OVERVIEW</h2>
+</div>
+<br></br>
+<div class="patient">
+    <h1> {{ patient_info.PT_F_NAME }}  {{ patient_info.PT_LAST_NAME }}</h1>
+    <a href="" data-bs-toggle="modal"  data-bs-target="#Modal_edit_patient" class="btn" style=" background-color:rgba(0, 187, 0, 0.69); width: 3rem ; height: 3rem;font-size: 1.5rem; border-radius: 0.5rem; display: flex; align-items: center;">
+        <i class="bi bi-pencil-square" style="filter: invert(1);"></i>
+    </a>
+    <a href="{%url 'patient_flag' pk=patient_info.id %}" class="btn" id="flag">FLAG</a>
+</div>
+<br></br>
+<div class="container" style="display: flex; flex-direction: row; justify-content: space-between;" >
+    <div class="container2" style="display: flex; justify-content: space-between; flex-direction: column;">
+        <div  class = "container_risk" style = " padding: 1rem; display:flex; align-items: center; flex-direction:column; min-width: 30rem; min-height: 10rem; justify-content : center ; border: 0.05rem solid rgba(0, 0, 0, 0); border-radius: 1.5rem; overflow: hidden; background-color: white;">
+            <div class="prediction_title" style = " padding: 1rem; display:flex; align-items: center; flex-direction:row; gap: 2rem;">
+                <div>
+                    <h3>AD CURRENT RISK</h3>
+                </div>
+                <div>
+                    <a href="{%url 'prediction_view' pk=user_info.id p_pk=patient_info.id %}" class="btn btn-primary" style="font-size: 0.7rem;" id="predictor">PREDICT</a>
+                </div>    
+            </div>
+            <div class="risk_prediction" style="position:relative; width: 80%; height: 4rem; margin:0.5rem auto; display:flex; align-items: center; flex-direction:column;">
+                <p>{{predictions.Risk_prediction}}</p>
+            </div>
+        </div>
+        <br></br>
+        <div class = "container_diag" style = " padding: 1rem; display:flex; align-items: center; flex-direction:column; min-width: 30rem; min-height: 10rem; justify-content : center ; border: 0.05rem solid rgba(0, 0, 0, 0); border-radius: 1.5rem; overflow: hidden; background-color: white;">
+            <div>
+                <h3">CURRENT DIAGNOSIS</h3>
+            </div>
+            <div class="Diagnoisis" style="position:relative; width: 80%; height: 4rem; margin:0.5rem auto;">
+            </div>
+        </div>
+    </div>
+    <div  class = "container_visits" style = " padding: 1rem; display:flex; align-items: center; flex-direction:column;  min-width: 45rem; min-height: 10rem; justify-content : center ; border: 0.05rem solid rgba(0, 0, 0, 0); border-radius: 1.5rem; overflow-x: scroll; overflow-x: hidden; background-color: white;">
+        <div style=" position:relative; top: -6rem; left:9rem; display:flex; justify-content:center;  flex-direction: row; gap:15rem;">
+            <div>
+                <h3>VISITS</h3>
+            </div>
+      
+            <div>
+                <a id = "add_patient" href="{% url 'patient_dashboard' pk=user_info.pk  p_pk=patient_info.id %}" style="font-size: 0.7rem;" data-bs-toggle="modal"  data-bs-target="#Modal_add_visit" class="btn btn-primary">ADD VISIT</a>
+            </div>
+        </div>
+        <div class="visits" style="position:relative; width: 80%;max-width: 80%; height: 4rem; right: 4rem; top: -4rem; text-overflow: ellipsis;">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">VISIT</th>
+                        <th scope="col">GROUP</th>
+                        <th scope="col">EDUC</th>
+                        <th scope="col">SES</th>
+                        <th scope="col">CDR</th>
+                        <th scope="col">MMSCORE</th>
+                        <th scope="col">AGE</th>
+                        <th scope="col">ETIV</th>
+                        <th scope="col">NWBW</th>
+                        <th scope="col">ASF</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for visit in patient_visits %}
+                    <tr>
+                        <td>{{visit.VISIT}}</td>
+                        <td>{{visit.GROUP}}</td>
+                        <td>{{visit.EDUCATION}}</td>
+                        <td>{{visit.SES}}</td>
+                        <td>{{visit.CDR}}</td>
+                        <td>{{visit.MMSCORE}}</td>
+                        <td>{{visit.AGE}}</td>
+                        <td>{{visit.ETIV}}</td>
+                        <td>{{visit.NWBV}}</td>
+                        <td>{{visit.ASF}}</td>
+                    </tr>
+                    {% endfor %} 
+                </tbody>
+               </table>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+<script>
+const form_visit = document.getElementById('form_visit');
+  
+  if (form_visit) {
+    form_visit.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(this);
+      fetch(this.action, {
+        method: "POST",
+        body: formData,
+        headers: {'X-Requested-With': 'XMLHttpRequest','X-CSRFToken': formData.get('csrfmiddlewaretoken')}
+      })
+      .then(response => response.json())
+      .then(data =>{
+        if (data.patient_visits) {
+          window.location.reload();
+        } 
+        else {
+          alert('saveING ERROR');
+        }
+      })
+      .catch(error => {console.error('CANT SUBMIT FORM', error);});
+    });
+  }
+</script>
+<style>
+
+table{
+    max-width: 30rem; 
+    overflow: scroll;
+}
+.patient{
+    display: flex; justify-content: space-between;
+}
+.title{
+    color: #0077ff; 
+    border-radius: 3rem; 
+    padding: 1rem; 
+    width: 100%;
+    display: flex; 
+    justify-content:center; 
+    align-items: center;
+}
+h1{
+    font-size: 2rem; 
+    overflow: hidden; 
+    background-color: rgba(255, 255, 255, 0.77); 
+    color: rgb(82, 82, 82); border-radius: 1rem; 
+    padding: 1rem; 
+    width: 80%; 
+    display: flex; 
+    justify-content: center;
+}
+
+h2{
+    font-size: 2rem; 
+    overflow: hidden;
+}
+#flag{
+    width: 10%;
+    height: 20%;
+    font-size: 1.5rem;
+    background-color: red; 
+    color: white; 
+    display: flex; 
+    justify-content: center;
+}
+h3{
+    font-size: 1rem; display:flex; align-items: center; color: #4f4f4f; 
+}
+</style>
+
+
+{% endblock%}

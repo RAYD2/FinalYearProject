@@ -1,5 +1,93 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Hello World</h1>
-{% endblock%}
+
+<div class= "container_info" style="display: flex; flex-direction: row;  justify-content: space-between; position: relative; right: 10%;">
+    {% if current_patients %}
+    <br></br>
+    <div  class = container_cards style = " padding: 1rem; display:flex; align-items: center; flex-direction:column;  min-width: 25rem; max-width:40rem;  min-height: 40rem; justify-content : center ; border: 0.05rem solid rgba(0, 0, 0, 0); border-radius: 1rem; overflow: hidden; background-color: white;">
+        <div>
+            <h3 style="padding-top: 2%; padding-bottom: 4%; color: #0077ff; position: relative; bottom: 15rem;">Current Patients</h3>
+        </div>
+        {% for patient in current_patients  %}
+            <div class="card">
+                <a href="{% url 'patient_dashboard' pk=user_info.pk p_pk=patient.id %}" class="text-decoration-none" style="cursor: pointer; color: black;">
+                    <div class="card-body">
+                        <div class="card_items" >
+                            <h5 class="card-title" style="font-size: 1.2rem;">{{patient.PT_F_NAME}} {{patient.PT_LAST_NAME}} </h5>
+                            <a href="{%url 'patient_remove_list' patient.id %}"  class="btn" style="width: 1rem ;height: 1.5rem; font-size: 0.7rem; align-items: center; position: relative; left: 4.5%; bottom: 0.5rem; background-color: red; color: white; display: flex;  justify-content: center;">X</a>
+                        </div>
+                        <p class="card-text" style="font-size: 0.6rem;">ID: {{patient.SUBJECT_ID}}</p>
+                    </div>
+                </a>
+            </div>
+    {% endfor %} 
+    </div>
+{% else %}
+    <p>No Current Patients</p>
+{% endif %}
+    {% if flagged_patients %}
+        <div  class = container_cards2>
+            <div>
+                <h3>Flagged Patients</h3>
+            </div>
+            {% for patient in flagged_patients  %}
+                <div class="card">
+                    <a href="{% url 'patient_dashboard' pk=user_info.pk p_pk=patient.id %}" class="text-decoration-none" style="cursor: pointer; color: black;">
+                        <div class="card-body">
+                            <div style = " display:flex; justify-content: space-between; flex-direction:row;" >
+                                <h5 class="card-title" style="font-size: 1.2rem;">{{patient.PT_F_NAME}} {{patient.PT_LAST_NAME}} </h5>
+                            </div>
+                            <p class="card-text" style="font-size: 0.6rem;">ID: {{patient.SUBJECT_ID}}</p>
+                        </div>
+                    </a>
+                </div>
+        {% endfor %} 
+        </div>
+{% else %}
+    <p>No Flagged Patients</p>
+{% endif %}
+</div>
+<style>
+    /* flag css */
+    .container_cards2{
+        padding: 1rem; 
+        display:flex; 
+        align-items: center; 
+        flex-direction:column; 
+        min-width: 25rem; 
+        max-width:40rem;  
+        min-height: 40rem; 
+        justify-content : center ; 
+        border: 0.05rem solid rgba(0, 0, 0, 0); 
+        border-radius: 1rem; 
+        overflow: hidden; 
+        background-color: white;
+    }
+    h3{
+        padding-top: 2%; 
+        padding-bottom: 4%; 
+        color: #0077ff; 
+        position: relative; 
+        bottom: 10rem;
+    }
+    .card{
+        position:relative; 
+        width: 80%; 
+        height: 4rem; 
+        margin:0.5rem auto; 
+        position: relative; 
+        bottom: 15rem;
+    }
+    .card_body{
+        position: relative; 
+        bottom: 0.5rem;
+    }
+    .card_items{
+        display:flex; 
+        justify-content: 
+        space-between; 
+        flex-direction:row;
+    }
+</style>
+{% endblock %}

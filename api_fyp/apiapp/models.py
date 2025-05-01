@@ -18,6 +18,13 @@ class User(AbstractUser):
             'username': self.username,
             'email': self.email,
         }
+# making a profile for each user 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete= models.CASCADE)
+    img = models.ImageField(default='', upload_to='pics_user')
+
+    def __str__(self):
+        return self.user.username
 #  model for the patient data
 class Patient(models.Model):
 
@@ -33,6 +40,19 @@ class Patient(models.Model):
         (1, 'Left')
     ]
 
+    PT_F_NAME = models.CharField(max_length=50, null=True, blank=False)
+    PT_LAST_NAME = models.CharField(max_length=50, null=True, blank=False)
+    SUBJECT_ID = models.CharField(max_length=50, null=True, blank=False, unique=True)
+    MRI_ID = models.CharField(max_length=50, null=True, blank=False, unique=True)
+    GENDER = models.IntegerField(choices=GenderChoices, null=True, blank=False)
+    HAND = models.IntegerField(choices=Dominant_H_Choices, null=True, blank=False)
+    assigned_to = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name= 'assigned_to',null=True, blank=True)
+    flagged_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name= 'flagged_by',null=True, blank=True)
+    def __str__(self):
+        return self.SUBJECT_ID
+
+class Visit(models.Model):
+
     # Choices for Social Economic Status 
     CDR_Choices = [
         (0,'Non Demented'),
@@ -47,32 +67,23 @@ class Patient(models.Model):
         (1, 'Demented'),
         (2, 'Converted')
     ] 
-  
-    PT_F_NAME = models.CharField(max_length=50, null=True, blank=False)
-    PT_LAST_NAME = models.CharField(max_length=50, null=True, blank=False)
-    SUBJECT_ID = models.CharField(max_length=50, null=True, blank=False)
-    MRI_ID = models.CharField(max_length=50, null=True, blank=False)
-    GENDER = models.IntegerField(choices=GenderChoices, null=True, blank=False)
-    HAND = models.IntegerField(choices=Dominant_H_Choices, null=True, blank=False)
+    # maximum 6 visits for now 
+    VISIT = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)],null=True, blank=False)
     GROUP = models.IntegerField(choices=Group_Choices , null=True, blank=False)
     EDUCATION = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)],null=True, blank=False)
     SES = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)],null=True, blank=False)
     CDR = models.IntegerField(choices=CDR_Choices, null=True, blank=False)
     MMSCORE = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)],null=True, blank=False)
-    AGE = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)],null=True, blank=False)
-    ETIV = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)],null=True, blank=False)
-    NWBV = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)],null=True, blank=False)
-    ASF = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)],null=True, blank=False)
-    Doctor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank = True)
-    def __str__(self):
-        return self.SUBJECT_ID
-# making a profile for each user 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete= models.CASCADE)
-    treating = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name= 'assigned_to',null=True, blank=True)
+    AGE = models.IntegerField(validators=[MinValueValidator(0)],null=True, blank=False)
+    ETIV = models.FloatField(validators=[MinValueValidator(0)],null=True, blank=False)
+    NWBV = models.FloatField(validators=[MinValueValidator(0)],null=True, blank=False)
+    ASF = models.FloatField(validators=[MinValueValidator(0)],null=True, blank=False)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name= 'visits',null=False, blank=True)
 
     def __str__(self):
-        return self.user.username
+        return str(self.id)
+# class MRI(models.Model):
+
 
 # making a profile for each patient
 
@@ -84,11 +95,20 @@ class UserProfile(models.Model):
 #         return self.u.username
     
 class Prediction(models.Model):
-    SUBJECT_ID = models.CharField(max_length=50, null=True, blank=False)
-    Prediction_Result = models.CharField(max_length=50)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name= 'prediction',null=True, blank=True)
+    Prediction_Result = models.JSONField(null=True, blank=True)
+    Risk_prediction = models.CharField(max_length =100,null=True, blank =True)
+    # Prediction_Result = models.CharField(max_length =100,null=True, blank=False)
+    DATE_PREDICTED = models.DateTimeField(null=True, blank=False)
 
     def __str__(self):
-        return self.SUBJECT_ID
+        return str(self.id)
+    
+class MRI_IMG(models.Model):
+    patient_img = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name= 'MRI_image',null=True, blank=True)
+    img = models.ImageField(default='', upload_to='pics_user')
+    def __str__(self):
+        return str(self.id)
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
