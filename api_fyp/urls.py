@@ -32,4 +32,5 @@ urlpatterns = [
     path("patients/flag/<int:pk>/", views.patient_flag, name = "patient_flag"),
     path("patient_dashboard/<int:pk>/<int:p_pk>/", views.patient_dashboard, name = "patient_dashboard"),
     path("patient_dashboard/prediction_view/<int:pk>/<int:p_pk>/", views.prediction_view, name="prediction_view"),
+    path("profile/<int:pk>/", views.profile, name = "profile"),
 ]
