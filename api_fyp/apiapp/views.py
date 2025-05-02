@@ -27,10 +27,15 @@ from .models import Prediction
 import datetime
 from django.core.serializers import serialize
 from django.template.loader import render_to_string
+from django.db.models import Q
 
 
 def home(request: HttpRequest) -> HttpResponse:
     return render(request, 'Home.html', {})
+
+def profile(request: HttpRequest, pk) -> HttpResponse:
+    return redirect('profile', pk= request.user.pk)
+
 
 def userprofile(request: HttpRequest, pk) -> HttpResponse:
     if request.user.is_authenticated:
@@ -76,34 +81,59 @@ def user_signup(request):
     return JsonResponse({'error': "signup not successful"})
 
 # functions to get patient details/ add patients/edit their information
-
+# def patient_list(request, pk):
+#     query = request.GET.get('query_value')
+#     if query:
+#         query = query.split()
+#         fields = Q()
+#         for i in query:
+#             q_objects |= Q(PT_F_NAME__icontains= i)
+#             q_objects |= Q(PT_LAST_NAME__icontains= i)
+#             q_objects |= Q(SUBJECT_ID__icontains= i)
+#         patients = Patient.objects.filter(fields)
+#     else:
+#               patients = Patient.objects.filter(assigned_to__isnull = True)
+#     return render(request, "patient.html", {"patients", patients})
 
 def patients(request, pk):
     # form to add patients 
     user_info = get_object_or_404(UserProfile, id=pk)
     # user_info_list = list(user_info.values())
-    patients = Patient.objects.filter(assigned_to__isnull = True)
-    patients_list = list(patients.values())
+    # patients = Patient.objects.filter(assigned_to__isnull = True)
+    # patients_list = list(patients.values())
+    query = request.GET.get('query_value')
+    if query:
+        query = query.split()
+        fields = Q()
+        for i in query:
+            fields |= Q(PT_F_NAME__icontains= i)
+            fields |= Q(PT_LAST_NAME__icontains= i)
+            fields |= Q(SUBJECT_ID__icontains= i)
+        patients = Patient.objects.filter(fields)
+        patients_list = list(patients.values())
+    else:
+        patients = Patient.objects.filter(assigned_to__isnull = True)
+        patients_list = list(patients.values())
     if request.method == 'GET':
         form = create_new_patient()
         if request.headers.get('X-Requested-With')== 'XMLHttpRequest' and request.GET.get('action') == 'get_form':
             form_b = render_to_string('patient.html', {'form':form}, request)
             return JsonResponse({'form': form_b})
         return render(request,'patients.html', {
-            "patients":patients_list, 
+            'patients': patients_list,
             'user_info': user_info , 
             'form': form
         })
     elif request.method == 'POST'and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         form = create_new_patient(request.POST)
         if form.is_valid():
-            patient =  form.save()
+            patient = form.save()
             form = create_new_patient()
             # return redirect('patients', pk = patient.pk)
-        patients = Patient.objects.filter(assigned_to__isnull = True)
-        patients_list = list(patients.values())
+        # patients = Patient.objects.filter(assigned_to__isnull = True)
+        # patients_list = list(patients.values())
         return JsonResponse({
-            'patients': patients_list,
+            "patients": patients_list,
             'id': patient.id,
             'SUBJECT_ID': patient.SUBJECT_ID,
             'MRI_ID': patient.MRI_ID, 
@@ -117,7 +147,7 @@ def patients(request, pk):
             return redirect('patients', pk=pk )
 
     # only patients that are not already assigned show up
-    return render(request, 'patients.html', {"patients":patients_list, 'user_info': user_info, 'form':create_new_patient()})
+    return render(request, 'patients.html', {'user_info': user_info, 'form':create_new_patient(), "patients": patients_list})
 
 def dash_view(request, pk):
     if request.user.is_authenticated:
@@ -149,12 +179,13 @@ def patient_dashboard(request, pk , p_pk):
     user_info = get_object_or_404(UserProfile, id=pk)
     patient_visits = Visit.objects.filter(patient = patient_info).order_by('VISIT')
     prediction_patient = Prediction.objects.filter(patient = patient_info).order_by('DATE_PREDICTED').last()
+    current_diagnosis = Visit.objects.filter(patient = patient_info).order_by('VISIT').last()
     if request.method == 'GET':
         form = create_visit()
         if request.headers.get('X-Requested-With')== 'XMLHttpRequest' and request.GET.get('action') == 'get_form':
             form_b = render_to_string('patient_dashboard.html', {'form':form}, request)
             return JsonResponse({'form': form_b})
-        return render(request, 'patient_dashboard.html', {'form': form,'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient})
+        return render(request, 'patient_dashboard.html', {'form': form,'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
     elif request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         form = create_visit(request.POST)
         if form.is_valid():
@@ -179,7 +210,7 @@ def patient_dashboard(request, pk , p_pk):
 
 
     print(patient_info)
-    return render(request, "patient_dashboard.html", {"patient_info" : patient_info, "user_info" : user_info , "patient_visits": patient_visits,"predictions": prediction_patient})
+    return render(request, "patient_dashboard.html", {"patient_info" : patient_info, "user_info" : user_info , "patient_visits": patient_visits,"predictions": prediction_patient, "current_diagnosis":current_diagnosis })
 
 
 def patient_remove_list(request, pk):
