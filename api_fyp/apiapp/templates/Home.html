@@ -8,10 +8,41 @@
   </head>
   <body class = "main_container">
     <h1>A-MEDIC</h1>
-    <a class="btn btn-primary" href="{% url 'login' %}">Login</a>
     <br><br>
-    <a class="btn btn-primary" href="{% url 'signup' %}">Signup</a>
+    <a id ="btn_login" class="btn" href="{% url 'login' %}">Login</a>
+    <br><br>
+    <a id ="btn_signup" class="btn" href="{% url 'signup' %}">Signup</a>
    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
   </body>
+  <style>
+    .main_container{
+        min-width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction:column;
+        position: relative;
+        top: 10rem;
+    }
+    h1{
+        font-size: 10rem;
+        color: #0077ff;
+    }
+    .btn{
+        border-radius: 2rem; 
+        font-size: 3rem;
+        padding: 2rem 30rem 2rem  30rem ;
+        overflow: hidden; 
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        color: white;
+    }
+    #btn_login{
+        background-color: #0077ff;
+    }
+    #btn_signup{
+        background-color: #0077ff68;
+    }
+   
+  </style>
 </html>

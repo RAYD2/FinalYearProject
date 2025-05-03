@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .apiapp import views
+from django.conf import settings 
+from django.conf.urls.static import static
 
 urlpatterns = [
 
@@ -31,6 +33,8 @@ urlpatterns = [
     path("patients/remove/<int:pk>/", views.patient_remove_list, name = "patient_remove_list"),
     path("patients/flag/<int:pk>/", views.patient_flag, name = "patient_flag"),
     path("patient_dashboard/<int:pk>/<int:p_pk>/", views.patient_dashboard, name = "patient_dashboard"),
+    path("patient_dashboard/add_mri/<int:pk>/<int:p_pk>/", views.add_img, name = "add_img"),
     path("patient_dashboard/prediction_view/<int:pk>/<int:p_pk>/", views.prediction_view, name="prediction_view"),
     path("profile/<int:pk>/", views.profile, name = "profile"),
-]
+    # automatic creation of a url for image path
+]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT )

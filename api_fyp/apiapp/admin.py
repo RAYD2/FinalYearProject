@@ -6,10 +6,11 @@ from .models import Prediction
 from .models import User
 from .models import UserProfile
 from .models import Visit
+from .models import MRI_IMG
 
 @admin.register(Patient)
 class GetPatientAdmin(admin.ModelAdmin):
-    list_display = ['SUBJECT_ID', 'MRI_ID', 'GENDER', 'HAND']
+    list_display = ['SUBJECT_ID', 'GENDER', 'HAND']
 
 
 @admin.register(Prediction)
@@ -34,3 +35,7 @@ class GetUserProfile(admin.ModelAdmin):
 class GetUserProfile(admin.ModelAdmin):
     list_display = ['VISIT','GROUP', 'EDUCATION', 'SES', 'CDR', 'MMSCORE', 'AGE', 'ETIV', 'NWBV', 'ASF']
    
+@admin.register(MRI_IMG)
+class GetUserProfile(admin.ModelAdmin):
+    list_display = ['MRI_ID']
+    pass
