@@ -28,13 +28,15 @@ import datetime
 from django.core.serializers import serialize
 from django.template.loader import render_to_string
 from django.db.models import Q
+from .forms import create_MRI
 
 
 def home(request: HttpRequest) -> HttpResponse:
     return render(request, 'Home.html', {})
 
 def profile(request: HttpRequest, pk) -> HttpResponse:
-    return redirect('profile', pk= request.user.pk)
+    user_info = get_object_or_404(UserProfile, id=pk)
+    return render(request, 'Profile.html', {"user_info": user_info})
 
 
 def userprofile(request: HttpRequest, pk) -> HttpResponse:
@@ -191,7 +193,7 @@ def patient_dashboard(request, pk , p_pk):
         if form.is_valid():
             visit_form = form.save(commit=False)
             visit_form.patient = patient_info
-            visit_form.save()
+            form.save()
             form = create_visit() 
             # prediction = None
         else:
@@ -205,12 +207,35 @@ def patient_dashboard(request, pk , p_pk):
        if form.is_valid():
             visit_form = form.save(commit=False)
             visit_form.patient = patient_info
-            visit = form.save()
+            form.save()
             return redirect('patient_dashboard', pk=pk, p_pk =p_pk )
+       else:
+            return render(request, 'patient_dashboard.html', {'form': form,'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
+    
+def add_img(request, pk , p_pk):
+    patient_info = get_object_or_404(Patient, id=p_pk)
+    user_info = get_object_or_404(UserProfile, id=pk)
+    patient_visits = Visit.objects.filter(patient = patient_info).order_by('VISIT')
+    prediction_patient = Prediction.objects.filter(patient = patient_info).order_by('DATE_PREDICTED').last()
+    current_diagnosis = Visit.objects.filter(patient = patient_info).order_by('VISIT').last()
+    if request.method == 'GET':
+        form = create_MRI()
+        if request.headers.get('X-Requested-With')== 'XMLHttpRequest' and request.GET.get('action') == 'get_form':
+            form_m = render_to_string('patient_dashboard.html', {'form': form}, request)
+            return JsonResponse({'form': form_m})
+        return render(request, 'patient_dashboard.html', {'form_mri': form,'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
+    elif request.method == "POST":
+        form = create_MRI(request.POST, request.FILES)
+        if form.is_valid():
+                mri_form = form.save(commit=False)
+                mri_form.patient_img = patient_info
+                mri_form.save()
+                return redirect('patient_dashboard', pk=pk, p_pk =p_pk )
+        else:
+            form = create_MRI() 
+            return render(request, 'patient_dashboard.html', {'form_mri': form,'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
 
-
-    print(patient_info)
-    return render(request, "patient_dashboard.html", {"patient_info" : patient_info, "user_info" : user_info , "patient_visits": patient_visits,"predictions": prediction_patient, "current_diagnosis":current_diagnosis })
+    return redirect('patient_dashboard', pk=pk, p_pk =p_pk )
 
 
 def patient_remove_list(request, pk):
@@ -280,11 +305,16 @@ def get_encoded_LSTM(request, pk, p_pk):
     patient_visits = Visit.objects.filter(patient = patient_info).order_by('VISIT')
     data = list(patient_visits.values())
     # list of db values are turned into a dataframe
+    # adding a column for their gender
     df = pd.DataFrame(data)
+    # patient_info = patient_info.reset_index(drop= True)
+    df['Gender'] = patient_info.GENDER
+    df = df.drop('patient_id', axis=1 )
+    print(df)
     # this data frame is passes through a fucntion which normalises it and turns them into timesteps (same script used in training)
-    df = supervised(df, input_TS=1,output_TS=1,dropnan=True)
-    # print(df)
-    # print(df.head)
+    # df = supervised(df, input_TS=1,output_TS=1,dropnan=True)
+    df = normalise(df)
+
     return df
 def normalise(df):
 
@@ -294,8 +324,8 @@ def normalise(df):
     # using the supervised method to frame the df as supervised learning
     supervised_df = supervised(scaled_df, 1, 1)
     # isolating the feature we want to predict, resulting in 8 input variables/ 1 target (output variable aka group)
-    supervised_df = supervised_df.drop(['var2(t)','var3(t)', 'var4(t)', 'var5(t)', 'var6(t)', 'var7(t)', 'var8(t)', 'var9(t)', 'var10(t)', 'var11(t)', 'var12(t)'],axis = 1, inplace = True)
-    
+    supervised_df = supervised_df.drop(['var2(t)','var3(t)', 'var4(t)', 'var5(t)', 'var6(t)', 'var7(t)', 'var8(t)', 'var9(t)', 'var10(t)', 'var11(t)', 'var12(t)'],axis = 1)
+    # print(supervised_df)
     return supervised_df
 # framing the supervised learning problem as prediciting the likleyhood of developing AD
 def supervised(data, input_TS = 1, output_TS = 1, dropnan = True):

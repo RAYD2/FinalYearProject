@@ -43,7 +43,6 @@ class Patient(models.Model):
     PT_F_NAME = models.CharField(max_length=50, null=True, blank=False)
     PT_LAST_NAME = models.CharField(max_length=50, null=True, blank=False)
     SUBJECT_ID = models.CharField(max_length=50, null=True, blank=False, unique=True)
-    MRI_ID = models.CharField(max_length=50, null=True, blank=False, unique=True)
     GENDER = models.IntegerField(choices=GenderChoices, null=True, blank=False)
     HAND = models.IntegerField(choices=Dominant_H_Choices, null=True, blank=False)
     assigned_to = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name= 'assigned_to',null=True, blank=True)
@@ -68,8 +67,8 @@ class Visit(models.Model):
         (2, 'Converted')
     ] 
     # maximum 6 visits for now 
-    VISIT = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)],null=True, blank=False)
     GROUP = models.IntegerField(choices=Group_Choices , null=True, blank=False)
+    VISIT = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)],null=True, blank=False)
     EDUCATION = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)],null=True, blank=False)
     SES = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)],null=True, blank=False)
     CDR = models.IntegerField(choices=CDR_Choices, null=True, blank=False)
@@ -106,7 +105,9 @@ class Prediction(models.Model):
     
 class MRI_IMG(models.Model):
     patient_img = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name= 'MRI_image',null=True, blank=True)
-    img = models.ImageField(default='', upload_to='pics_user')
+    # on image upload media dir and imgs sub dir created
+    MRI_ID = models.CharField(max_length=50, null=True, blank=False, unique=True)
+    img = models.ImageField(null=True, blank=True,upload_to='imgs/')
     def __str__(self):
         return str(self.id)
 

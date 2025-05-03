@@ -3,6 +3,7 @@ from django import forms
 from .models import User
 from .models import Patient
 from .models import Visit 
+from .models import MRI_IMG
 
 class create_user(UserCreationForm):
     email = forms.EmailField(label ="", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Enter Email Address"}))
@@ -26,4 +27,9 @@ class create_visit(forms.ModelForm):
     class Meta:
         model = Visit
         fields = ('VISIT','GROUP', 'EDUCATION', 'SES', 'CDR', 'MMSCORE', 'AGE', 'ETIV', 'NWBV', 'ASF')
+
+class create_MRI(forms.ModelForm):
+    class Meta:
+        model = MRI_IMG
+        fields = ('MRI_ID','img')
 

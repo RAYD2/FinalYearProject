@@ -20,6 +20,25 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="Modal_add_img" tabindex="-1" aria-labelledby="Modal_add_imgLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="Modal_add_imgLabel">MRI IMAGES RESULTS</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div id = "modal_container" class="modal-body">
+            <form method = "post" enctype="multipart/form-data" id = "form_img" action="{% url 'add_img' pk=user_info.pk  p_pk=patient_info.id %}"  novalidate>
+                {% csrf_token%}
+                {{form_mri.as_p}}
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">UPLOAD</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
 <div class="patient_dash">
     <!-- <br></br> -->
     <div class="patient">
@@ -68,6 +87,12 @@
                     {%else%}
                     <p>Not enough visits</p>
                     {%endif%}
+                </div>
+            </div>
+            <br></br>
+            <div class = "container_MRI">
+                <div class="mri">
+                    <a id = "add_mri" href="{% url 'add_img' pk=user_info.pk  p_pk=patient_info.id %}" data-bs-toggle="modal"  data-bs-target="#Modal_add_img" class="btn btn-primary">ADD MRI</a>
                 </div>
             </div>
         </div>
@@ -255,6 +280,20 @@ h3{
     flex-direction: column;
 }
 .container_risk{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 1rem; 
+    display:flex; 
+    align-items: center; 
+    flex-direction:column; 
+    min-width: 20rem; 
+    min-height: 10rem; 
+    justify-content : center ; 
+    border: 0.05rem solid rgba(0, 0, 0, 0); 
+    border-radius: 1rem; 
+    overflow: hidden; 
+    background-color: white;
+}
+.container_MRI{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     padding: 1rem; 
     display:flex; 

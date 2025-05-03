@@ -1,7 +1,56 @@
-<a class="btn btn-primary" href="{% url 'home' %}">Back</a>
-<form method = "post" novalidate>
-    {% csrf_token%}
-    <h2>Signup</h2>
-    {{form.as_p}}
-    <button type="submit" class="btn btn-primary">Sign up</button>
-</form>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <a class="btn btn-primary" href="{% url 'home' %}">Back</a>
+        <div class = "main_container">
+            <form method = "post" novalidate>
+                <h1>A-MEDIC</h1>
+                <br><br>
+                {% csrf_token%}
+                {{form.as_p}}
+                <button type="submit" class="btn btn-primary">Sign up</button>
+            </form>
+        </div>
+    </body>
+    <style>
+    .main_container{
+        min-width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction:column;
+        position: relative;
+        top: 5rem;
+    }
+    a{
+        position: relative;
+        top: 2rem;
+        left:1rem;
+    }
+    h1{
+        font-size: 10rem;
+        color: #0077ff;
+    }
+    p{
+        display: flex;
+        flex-direction: column;
+    }
+    p >input{
+        border-radius: 0.2rem;
+        height: 2rem;
+        border-color: rgba(128, 128, 128, 0.533);
+        border-width: 0.01rem;
+    }
+    ul{
+        list-style-type: none;
+    }
+    
+
+    </style>
+</html>
