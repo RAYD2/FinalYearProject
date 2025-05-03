@@ -30,14 +30,13 @@ from django.template.loader import render_to_string
 from django.db.models import Q
 from .forms import create_MRI
 
-
+# rendering the home page 
 def home(request: HttpRequest) -> HttpResponse:
     return render(request, 'Home.html', {})
-
+# rendering the profile page with the user information
 def profile(request: HttpRequest, pk) -> HttpResponse:
     user_info = get_object_or_404(UserProfile, id=pk)
     return render(request, 'Profile.html', {"user_info": user_info})
-
 
 def userprofile(request: HttpRequest, pk) -> HttpResponse:
     if request.user.is_authenticated:
@@ -82,27 +81,9 @@ def user_signup(request):
             return redirect('dash_view', pk=user.pk)
     return JsonResponse({'error': "signup not successful"})
 
-# functions to get patient details/ add patients/edit their information
-# def patient_list(request, pk):
-#     query = request.GET.get('query_value')
-#     if query:
-#         query = query.split()
-#         fields = Q()
-#         for i in query:
-#             q_objects |= Q(PT_F_NAME__icontains= i)
-#             q_objects |= Q(PT_LAST_NAME__icontains= i)
-#             q_objects |= Q(SUBJECT_ID__icontains= i)
-#         patients = Patient.objects.filter(fields)
-#     else:
-#               patients = Patient.objects.filter(assigned_to__isnull = True)
-#     return render(request, "patient.html", {"patients", patients})
-
 def patients(request, pk):
     # form to add patients 
     user_info = get_object_or_404(UserProfile, id=pk)
-    # user_info_list = list(user_info.values())
-    # patients = Patient.objects.filter(assigned_to__isnull = True)
-    # patients_list = list(patients.values())
     query = request.GET.get('query_value')
     if query:
         query = query.split()
@@ -184,10 +165,11 @@ def patient_dashboard(request, pk , p_pk):
     current_diagnosis = Visit.objects.filter(patient = patient_info).order_by('VISIT').last()
     if request.method == 'GET':
         form = create_visit()
+        form_mri = create_MRI()
         if request.headers.get('X-Requested-With')== 'XMLHttpRequest' and request.GET.get('action') == 'get_form':
             form_b = render_to_string('patient_dashboard.html', {'form':form}, request)
             return JsonResponse({'form': form_b})
-        return render(request, 'patient_dashboard.html', {'form': form,'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
+        return render(request, 'patient_dashboard.html', {'form': form, 'form_mri': form_mri, 'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
     elif request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         form = create_visit(request.POST)
         if form.is_valid():
@@ -210,7 +192,7 @@ def patient_dashboard(request, pk , p_pk):
             form.save()
             return redirect('patient_dashboard', pk=pk, p_pk =p_pk )
        else:
-            return render(request, 'patient_dashboard.html', {'form': form,'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
+            return render(request, 'patient_dashboard.html', {'form': form,'form_mri' :form_mri,  'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
     
 def add_img(request, pk , p_pk):
     patient_info = get_object_or_404(Patient, id=p_pk)
@@ -220,10 +202,11 @@ def add_img(request, pk , p_pk):
     current_diagnosis = Visit.objects.filter(patient = patient_info).order_by('VISIT').last()
     if request.method == 'GET':
         form = create_MRI()
+        form_visit = create_visit()
         if request.headers.get('X-Requested-With')== 'XMLHttpRequest' and request.GET.get('action') == 'get_form':
-            form_m = render_to_string('patient_dashboard.html', {'form': form}, request)
+            form_m = render_to_string('patient_dashboard.html', {'form_mri': form}, request)
             return JsonResponse({'form': form_m})
-        return render(request, 'patient_dashboard.html', {'form_mri': form,'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
+        return render(request, 'patient_dashboard.html', {'form_mri': form, 'form':form_visit,'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
     elif request.method == "POST":
         form = create_MRI(request.POST, request.FILES)
         if form.is_valid():
@@ -233,7 +216,7 @@ def add_img(request, pk , p_pk):
                 return redirect('patient_dashboard', pk=pk, p_pk =p_pk )
         else:
             form = create_MRI() 
-            return render(request, 'patient_dashboard.html', {'form_mri': form,'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
+            return render(request, 'patient_dashboard.html', {'form_mri': form, 'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
 
     return redirect('patient_dashboard', pk=pk, p_pk =p_pk )
 
