@@ -1,5 +1,53 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1></h1>
+<div>
+        <div class = "main_container2">
+            <a class="btn btn-primary" href="{% url 'dash_view' pk=user.pk %}">Back</a>
+            <h1>Edit Profile</h1>
+            <form method = "post" novalidate>
+                <!-- <h1>A-MEDI</h1> -->
+                <br><br>
+                {% csrf_token%}
+                {% for field in form%} 
+                    <label>{{field.name}}</label>
+                    <p>{{field}}</p>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+</div>
+<style>
+    a{
+        position: relative;
+        bottom: 5rem;
+        right:55rem;
+    }
+    .main_container2{
+        min-width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction:column;
+        position: relative;
+        top: 5rem;
+    }
+    
+    h1{
+        font-size: 6rem;
+        color: #0077ff;
+    }
+    p{
+        display: flex;
+        flex-direction: column;
+        border-radius: 0.2rem;
+        height: 2.5rem;
+        width: 60rem;
+        border-color: rgba(128, 128, 128, 0.533);
+        border-width: 0.01rem;
+    }
+    ul{
+        list-style-type: none;
+    }
+
+</style>
 {% endblock%}

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import create_user
+from .forms import edit_user
 from .forms import create_new_patient
 from .models import Visit
 from .forms import create_visit
@@ -29,6 +30,8 @@ from django.core.serializers import serialize
 from django.template.loader import render_to_string
 from django.db.models import Q
 from .forms import create_MRI
+from django.contrib.auth.models import User
+
 
 # rendering the home page 
 def home(request: HttpRequest) -> HttpResponse:
@@ -36,14 +39,24 @@ def home(request: HttpRequest) -> HttpResponse:
 # rendering the profile page with the user information
 def profile(request: HttpRequest, pk) -> HttpResponse:
     user_info = get_object_or_404(UserProfile, id=pk)
-    return render(request, 'Profile.html', {"user_info": user_info})
+    if request.method == "GET":
+        form = edit_user(instance=user_info.user)
+        return render(request, 'Profile.html', {"user_info": user_info, "form": form})
+    if request.method =="POST":
+        form = edit_user(request.POST or None, instance = user_info.user)
+        if form.is_valid():
+            form.save();
+        return render(request, 'Profile.html', {"user_info": user_info, "form": form})
+    
 
 def userprofile(request: HttpRequest, pk) -> HttpResponse:
     if request.user.is_authenticated:
         user_info = get_object_or_404(UserProfile, id=pk)
         return JsonResponse({"user_info" : user_info})
     else:
+        messages.success(request, ("please login to view"))
         return redirect('login')
+
 
 # using django's inbuilt authenticate function to process the post form
 def user_login(request: HttpRequest) -> HttpResponse:

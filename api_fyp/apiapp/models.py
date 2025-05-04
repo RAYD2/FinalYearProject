@@ -21,8 +21,6 @@ class User(AbstractUser):
 # making a profile for each user 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete= models.CASCADE)
-    img = models.ImageField(default='', upload_to='pics_user')
-
     def __str__(self):
         return self.user.username
 #  model for the patient data
