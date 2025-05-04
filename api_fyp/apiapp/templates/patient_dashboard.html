@@ -46,9 +46,9 @@
             <i class= "bi bi-arrow-left" style=" filter: invert(1);"></i>
         </a>
         <h1 id="patient_name"> {{ patient_info.PT_F_NAME }}  {{ patient_info.PT_LAST_NAME }}</h1>
-        <a href="" id = "edit_button" data-bs-toggle="modal"  data-bs-target="#Modal_edit_patient" class="btn">
+        <!-- <a href="" id = "edit_button" data-bs-toggle="modal"  data-bs-target="#Modal_edit_patient" class="btn">
             <i class="bi bi-pencil-square" style=" filter: invert(1);"></i>
-        </a>
+        </a> -->
         <a href="{%url 'patient_flag' pk=patient_info.id %}" class="btn" id="flag">FLAG</a>
     </div>
    
@@ -125,7 +125,6 @@
                     <tbody>
                         {% for visit in patient_visits %}
                         <tr>
-                            <td>{{visit.VISIT}}</td>
                             <td>{{visit.GROUP}}</td>
                             <td>{{visit.EDUCATION}}</td>
                             <td>{{visit.SES}}</td>
