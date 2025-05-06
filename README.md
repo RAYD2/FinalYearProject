@@ -25,3 +25,6 @@ then navigate to localhost url:
 
 http://127.0.0.1:8000/
 
+create a superuser to see admin page:
+
+python manage.py createsuperuser
