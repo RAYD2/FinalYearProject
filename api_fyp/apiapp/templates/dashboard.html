@@ -5,11 +5,13 @@
     <div class= "container_info">
         {% if current_patients %}
         <br></br>
+        <!-- current patient list, displays the list of added patients using the passed patient key -->
         <div  class = container_cards>
             <div class="header_list">
                 <h3>Current Patients</h3>
             </div>
             {% for patient in current_patients  %}
+            <!-- iterates through patient creating a user card for each user  -->
             <div class="card">
                 <a href="{% url 'patient_dashboard' pk=user_info.pk p_pk=patient.id %}" class="text-decoration-none" style="cursor: pointer; color: black;">
                     <div class="card-body">
@@ -21,6 +23,7 @@
                     </div>
                 </a>
             </div>
+            <!-- if the list is empty then it displays to the user that there is no patients -->
             {% endfor %} 
             {% else %}
             <div class = container_empty>
@@ -28,7 +31,7 @@
             </div>
             {% endif %}
         </div>
-        
+        <!-- same functionality as the current patient list, except it does not contain a remove button flagged patients are unflagged and flagged usingt the same flag button -->
         {% if flagged_patients %}
         <div  class = container_cards2>
                 <div class="header_list">
@@ -46,11 +49,13 @@
                         </a>
                     </div>
                 {% endfor %}
+                <!-- if current patients has patients and there is no flagged patients display the empty labeled container other wise leave empty -->
         {% elif current_patients%}
             <div class = "container_empty2">
                 <p id="flagged">No Flagged Patients</p>
             </div>
         {% endif %}
+        <!-- url to profile through button redirect -->
             <div class="profile">
                 <div class="profile_button">
                     <a href="{%url 'profile' pk=user_info.pk %}"  class="text-decoration-none" >EDIT PROFILE</a>

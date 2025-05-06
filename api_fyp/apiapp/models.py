@@ -47,7 +47,7 @@ class Patient(models.Model):
     flagged_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name= 'flagged_by',null=True, blank=True)
     def __str__(self):
         return self.SUBJECT_ID
-
+# model for stored visits 
 class Visit(models.Model):
 
     # Choices for Social Economic Status 
@@ -79,18 +79,7 @@ class Visit(models.Model):
 
     def __str__(self):
         return str(self.id)
-# class MRI(models.Model):
-
-
-# making a profile for each patient
-
-# class PatientProfile(models.Model):
-#     patient = models.OneToOneField(Patient, on_delete= models.CASCADE)
-#     assigned_to = models.ManyToOneRel(User, on_delete=models.CASCADE)
-
-#     def __str__(self):
-#         return self.u.username
-    
+# predictions are stored within this model once made, keeping a log of previous predictions
 class Prediction(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name= 'prediction',null=True, blank=True)
     Prediction_Result = models.JSONField(null=True, blank=True)
@@ -100,7 +89,7 @@ class Prediction(models.Model):
 
     def __str__(self):
         return str(self.id)
-    
+# mri images are saved in this model  
 class MRI_IMG(models.Model):
     patient_img = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name= 'MRI_image',null=True, blank=True)
     # on image upload media dir and imgs sub dir created
@@ -108,7 +97,7 @@ class MRI_IMG(models.Model):
     img = models.ImageField(null=True, blank=True,upload_to='imgs/')
     def __str__(self):
         return str(self.id)
-
+# function creates a new user using the instance passed into it 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         profile = UserProfile(user=instance)
