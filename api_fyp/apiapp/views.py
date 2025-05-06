@@ -265,7 +265,7 @@ def prediction_view(request, pk, p_pk):
         prediction = prediction_LSTM(request, pk , p_pk)
         predictions = risk_filter(prediction)
         final_risk = predictions[-1]
-        print("made it")
+        print("prediction made")
         add_prediction = Prediction.objects.create(patient = patient_info, Prediction_Result = prediction, DATE_PREDICTED = timezone.now(), Risk_prediction = final_risk )
         add_prediction.save()
     except Exception as e:
@@ -378,7 +378,9 @@ def prediction_LSTM(request, pk , p_pk):
     if not cred_token:
         print("no token :()")
     print("HER")
-    endpoint_link =f"https://us-central1-aiplatform.googleapis.com/v1/projects/{948712763405}/locations/us-central1/endpoints/{1073779757151158272}:predict"
+    endpointID=6436828041535553536
+    projectID = 948712763405
+    endpoint_link =f"https://us-central1-aiplatform.googleapis.com/v1/projects/{projectID}/locations/us-central1/endpoints/{endpointID}:predict"
     # defining the headers request
     headers = {
         "Authorization":  f"Bearer {cred_token}",

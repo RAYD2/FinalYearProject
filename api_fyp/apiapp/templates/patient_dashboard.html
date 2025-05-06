@@ -125,6 +125,7 @@
                     <tbody>
                         {% for visit in patient_visits %}
                         <tr>
+                            <td>{{visit.VISIT}}</td>
                             <td>{{visit.GROUP}}</td>
                             <td>{{visit.EDUCATION}}</td>
                             <td>{{visit.SES}}</td>
@@ -186,7 +187,6 @@ const form_visit = document.getElementById('form_visit');
 }
 table{
     max-width: 30rem; 
-    overflow: scroll;
 }
 
 #patient_name{
@@ -345,7 +345,7 @@ h3{
     border: 0.05rem solid rgba(0, 0, 0, 0);
     border-radius: 1rem; 
     overflow-x: scroll; 
-    overflow-x: hidden; 
+    overflow-y: scroll; 
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
