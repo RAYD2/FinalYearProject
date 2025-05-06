@@ -1,5 +1,9 @@
 # FinalYearProject
 
+OLD_LSTM - old model built on ADNI 
+FinalNotebooks - The final models
+api_fyp - THE REST/API
+
 to run this application enter these commands in terminal after nagivating to the downloaded directory
 
 navigate to the FinalYearProject file enter the below commands in terminal:
