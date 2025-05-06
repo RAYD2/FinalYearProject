@@ -5,6 +5,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+            <!-- modal form for adding patients triggered by the button in the containiner, allows users to add visits -->
           <h1 class="modal-title fs-5" id="Modal_add_visitLabel">ADD VISIT RESULTS</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -20,6 +21,7 @@
       </div>
     </div>
   </div>
+  <!-- allows users to upload images and store them locally using a modal form -->
   <div class="modal fade" id="Modal_add_img" tabindex="-1" aria-labelledby="Modal_add_imgLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -39,19 +41,18 @@
       </div>
     </div>
   </div>
+  <!-- the main patient dashboard -->
 <div class="patient_dash">
     <!-- <br></br> -->
+     <!-- patient information and flag button displayed here -->
     <div class="patient">
         <a href="{% url 'dash_view' pk=user.pk %}" class="btn" id="back_button">
             <i class= "bi bi-arrow-left" style=" filter: invert(1);"></i>
         </a>
         <h1 id="patient_name"> {{ patient_info.PT_F_NAME }}  {{ patient_info.PT_LAST_NAME }}</h1>
-        <!-- <a href="" id = "edit_button" data-bs-toggle="modal"  data-bs-target="#Modal_edit_patient" class="btn">
-            <i class="bi bi-pencil-square" style=" filter: invert(1);"></i>
-        </a> -->
         <a href="{%url 'patient_flag' pk=patient_info.id %}" class="btn" id="flag">FLAG</a>
     </div>
-   
+   <!-- the health overview for the selected patient -->
     <br></br>
     <div class="title">
         <h2 id="title"> HEALTH OVERVIEW</h2>
@@ -59,6 +60,7 @@
     <br></br>
     <div class="container" >
         <div class="container2">
+            <!-- once the prediction is made through the button the current risk is updated -->
             <div  class = "container_risk">
                 <div class="prediction_title">
                     <div>
@@ -68,6 +70,7 @@
                         <a href="{%url 'prediction_view' pk=user_info.id p_pk=patient_info.id %}" class="btn btn-primary" id="predictor">PREDICT</a>
                     </div>    
                 </div>
+                <!-- gets prediction stored in the database, once prediction is generated it is stored in the database and displayed to the user -->
                 <div class="risk_prediction">
                     {%if predictions%}
                     <p>{{predictions.Risk_prediction}}</p>
@@ -77,6 +80,7 @@
                 </div>
             </div>
             <br></br>
+            <!-- displays the most recent diagnosis if there are predictions -->
             <div class = "container_diag">
                 <div>
                     <h3>CURRENT DIAGNOSIS</h3>
@@ -96,6 +100,7 @@
                 </div>
             </div>
         </div>
+        <!-- contains all the visits associated witht the user in the form of a table -->
         <div  class = "container_visits">
             <div class = "visit_header">
                 <div>

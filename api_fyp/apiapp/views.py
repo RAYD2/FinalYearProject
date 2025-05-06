@@ -93,11 +93,12 @@ def user_signup(request):
             login(request, user)
             return redirect('dash_view', pk=user.pk)
     return JsonResponse({'error': "signup not successful"})
-
+# patient rendering view 
 def patients(request, pk):
     # form to add patients 
     user_info = get_object_or_404(UserProfile, id=pk)
     query = request.GET.get('query_value')
+    # search handling get and post requests
     if query:
         query = query.split()
         fields = Q()
@@ -120,6 +121,7 @@ def patients(request, pk):
             'user_info': user_info , 
             'form': form
         })
+    # creating new patient view handling get and post requests
     elif request.method == 'POST'and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         form = create_new_patient(request.POST)
         if form.is_valid():
@@ -144,7 +146,7 @@ def patients(request, pk):
 
     # only patients that are not already assigned show up
     return render(request, 'patients.html', {'user_info': user_info, 'form':create_new_patient(), "patients": patients_list})
-
+# redners the assigned/ flagged patients on the main dashbaord 
 def dash_view(request, pk):
     if request.user.is_authenticated:
         try:
@@ -162,14 +164,14 @@ def dash_view(request, pk):
        flagged_patients = Patient.objects.none()
     
     return render(request, "dashboard.html", {"current_patients" : current_patients, "user_info" : user_info , "flagged_patients" : flagged_patients})
-
+# saves an instance of a patient to the database
 def patient_add_list(request, pk):
     add_patient = Patient.objects.get(pk=pk)
     profile = UserProfile.objects.get(user=request.user)
     add_patient.assigned_to = profile
     add_patient.save()
     return redirect('patients', pk=profile.pk)
-
+# handles get and post requests for creating visits on the patient dashbaord 
 def patient_dashboard(request, pk , p_pk):
     patient_info = get_object_or_404(Patient, id=p_pk)
     user_info = get_object_or_404(UserProfile, id=pk)
@@ -206,7 +208,7 @@ def patient_dashboard(request, pk , p_pk):
             return redirect('patient_dashboard', pk=pk, p_pk =p_pk )
        else:
             return render(request, 'patient_dashboard.html', {'form': form,'form_mri' :form_mri,  'patient_info': patient_info,'user_info': user_info,'patient_visits': patient_visits ,"predictions": prediction_patient,"current_diagnosis":current_diagnosis})
-    
+# handles the get and post request for the mri image upload form, saving an instance in the database 
 def add_img(request, pk , p_pk):
     patient_info = get_object_or_404(Patient, id=p_pk)
     user_info = get_object_or_404(UserProfile, id=pk)
@@ -233,7 +235,7 @@ def add_img(request, pk , p_pk):
 
     return redirect('patient_dashboard', pk=pk, p_pk =p_pk )
 
-
+# removing patients from the current list, also removes relationship for flagged patients on the removed patient 
 def patient_remove_list(request, pk):
     patient = Patient.objects.get(pk=pk)
     profile = UserProfile.objects.get(user=request.user)
@@ -245,7 +247,7 @@ def patient_remove_list(request, pk):
     
     return redirect('dash_view',  pk=profile.pk)
 
-
+# patient flag, adds relationship one to one 
 def patient_flag(request, pk):
     flag_patient = Patient.objects.get(pk=pk)
     profile = UserProfile.objects.get(user=request.user)
@@ -256,7 +258,7 @@ def patient_flag(request, pk):
             flag_patient.flagged_by = None
             flag_patient.save()
     return redirect('patient_dashboard', pk=profile.id, p_pk =pk )
-
+# saving the prediction instance into the databsase associates it with the user that the prediction is made for
 def prediction_view(request, pk, p_pk):
     patient_info = get_object_or_404(Patient, id=p_pk)
     user_info = get_object_or_404(UserProfile, id=pk)
@@ -272,7 +274,7 @@ def prediction_view(request, pk, p_pk):
         print("CANT GET PREDICTION: ERROR")
         messages.error(request, "Prediction not avaliable")
     return redirect('patient_dashboard', pk=pk, p_pk =p_pk )
-
+# makes the results of the prediction interpretable
 def risk_filter(p):
     predictions_risk = []
     values = p['predictions']
@@ -367,6 +369,7 @@ def prediction_LSTM(request, pk , p_pk):
             "instances": input_new
     }
     # print(input_ds)
+    # defining the credentials to conenct to endpoint
     print("GOT THE DATA")
     cred_path = 'api_fyp/arctic-compass-457720-e8-fdadfe37776f.json'
     print("heloo")
@@ -381,6 +384,7 @@ def prediction_LSTM(request, pk , p_pk):
     endpointID=6436828041535553536
     projectID = 948712763405
     endpoint_link =f"https://us-central1-aiplatform.googleapis.com/v1/projects/{projectID}/locations/us-central1/endpoints/{endpointID}:predict"
+    # json request
     # defining the headers request
     headers = {
         "Authorization":  f"Bearer {cred_token}",
@@ -393,7 +397,7 @@ def prediction_LSTM(request, pk , p_pk):
 
     if response.status_code == 200:
         predicted = response.json()
-        
+        # recieves the json resposne 
         print(predicted)
         return predicted
 
