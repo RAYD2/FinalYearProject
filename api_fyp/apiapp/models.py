@@ -69,7 +69,7 @@ class Visit(models.Model):
     VISIT = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)],null=True, blank=False)
     EDUCATION = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)],null=True, blank=False)
     SES = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)],null=True, blank=False)
-    CDR = models.IntegerField(choices=CDR_Choices, null=True, blank=False)
+    CDR = models.FloatField(choices=CDR_Choices, null=True, blank=False)
     MMSCORE = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)],null=True, blank=False)
     AGE = models.IntegerField(validators=[MinValueValidator(0)],null=True, blank=False)
     ETIV = models.FloatField(validators=[MinValueValidator(0)],null=True, blank=False)

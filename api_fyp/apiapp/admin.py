@@ -33,7 +33,7 @@ class GetUserProfile(admin.ModelAdmin):
    
 @admin.register(Visit)
 class GetUserProfile(admin.ModelAdmin):
-    list_display = ['VISIT','GROUP', 'EDUCATION', 'SES', 'CDR', 'MMSCORE', 'AGE', 'ETIV', 'NWBV', 'ASF']
+    list_display = ['GROUP','VISIT', 'EDUCATION', 'SES', 'CDR', 'MMSCORE', 'AGE', 'ETIV', 'NWBV', 'ASF']
    
 @admin.register(MRI_IMG)
 class GetUserProfile(admin.ModelAdmin):

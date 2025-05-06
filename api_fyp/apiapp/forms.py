@@ -36,7 +36,8 @@ class create_visit(forms.ModelForm):
     # DATE_VISIT = forms.DateField( label ="VISIT DATE", widget=forms.DateInput(attrs={'placeholder':"Month/Day/Year", "type":"date", 'class':"form-control"}))
     class Meta:
         model = Visit
-        fields = ('VISIT','GROUP', 'EDUCATION', 'SES', 'CDR', 'MMSCORE', 'AGE', 'ETIV', 'NWBV', 'ASF')
+        exclude = ['patient']
+        fields = ('GROUP','VISIT', 'EDUCATION', 'SES', 'CDR', 'MMSCORE', 'AGE', 'ETIV', 'NWBV', 'ASF')
 
 class create_MRI(forms.ModelForm):
     class Meta:
